@@ -28,28 +28,32 @@ sub quote {
   print "S: $msg\n";
 }
 
+my %_commands = (
+  PING => sub {   
+    my ($cmd, $source) = @_; 
+    quote("PONG $source");
+ },
+);
+
+
 # Ignore this until the comments bring you here! Sroll 
-my %commands = (     # we've already declared %commands above as "my" (local)
-  JOIN => sub {   # command is the key, instructions on how to parse that command are in the value as an anonymous subroutine
-    my ($source, $cmd, $target) = @_; # this is what a JOIN line looks like: :miniCruzer!eyeless@255.255.255.255 JOIN :#Corinth"
-    # we want to say hello to $source in $target
-
-    my $nick = (split '!', $source)[0]; # split() turns each element into an array. we can shortcut this array by adding "[0]" (first element that gets split)
-    # if source is :miniCruzer!eyeless@255.255.255.255, then $nick is now ":miniCruzer"
-    $nick = substr $nick, 1; # remove the ':'
-    $target = substr $target, 1; # same for the channel
-
+my %commands = (     
+  JOIN => sub {   
+    my ($source, $cmd, $target) = @_; 
+    my $nick = (split '!', $source)[0];"
+    $nick = substr $nick, 1;
+    $target = substr $target, 1;
     quote("PRIVMSG $target :Hello, $nick!");
-  }, # separate with a ','
-  '001' => sub {  # numeric 001 is the first numeric recieved, it means "welcome", and looks a bit like this: 
-    my ($server, $cmd, $target, @msg) = @_;  # :doom.ca.us.paradoxirc.net 001 Perl :Welcome to the ParadoxIRC IRC Network Perl!perl@188.165.74.48
-    quote("JOIN $channel"); # this tells the server I WONNA JOIN #PERL
+  },
+  '001' => sub {  
+    my ($server, $cmd, $target, @msg) = @_; 
+    quote("JOIN $channel");
   },
   PRIVMSG => sub {
     my ($src, $cmd, $target, @msg) = @_;
-    # command interface will go here
-  }
+  },
 );
+
 
 quote("NICK $mynick");                # this is registration to the server. we're introducing our self as
 quote("USER $mynick 8 $ident :$realname"); # Perl!perl, and our real name is LOL PERL!
@@ -65,22 +69,18 @@ while ($buffer = <$sock>) # < > resembles the output of the socket file. we stor
 close $sock; # this means that $sock has stopped talking to us, so we'll close our end too
 
 sub parse {
-  my ($buffer) = @_; # @_ is the array of variables that are passed to the subroutine. you MUST put ()s around the variable!
-
-  my @bits = split ' ', $buffer; # irc proto is consistent. :<source> <command> <target> [<other-arguments>]
-
-  my $source = $bits[0]; # all arrays start counting at 0. math teachers start counting at 1;
+  my ($buffer) = @_; 
+  my @bits = split ' ', $buffer; 
+  my $source = $bits[0];
   my $command = $bits[1];
   my $target = $bits[2];
-
-  # now we can begin parsing. life is easier when you parse without regex.
- 
-  # to do this, we shall use a sub routine for EACH command. these are stored
-  # anonymously (without a name) in the hash %commands. this may become foggy...
-
-  if (exists $commands{uc($command)}) # check to see if we can parse this command
+  if (exists $commands{uc($command)}) 
   {
-    # I guess we can!
-    $commands{$command}->(@bits); # this sends the anonymous subroutine defined at "$command" the whole line split into spaces.
+    $commands{$command}->(@bits); 
+  } 
+my $_command = $bits[0];
+  if (exists $_commands{uc($_command)})
+  {
+    $_commands{$_command}->(@bits); 
   } 
 }
