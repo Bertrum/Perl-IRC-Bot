@@ -49,7 +49,6 @@ my %commands = (     # we've already declared %commands above as "my" (local)
   },
   PRIVMSG => sub {
     my ($src, $cmd, $target, @msg) = @_;
-    quote("PRIVMSG $target :LOL THATS SOOOO COOOOOOL") unless $target eq 'Perl';
   }
 );
 
