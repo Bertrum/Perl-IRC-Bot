@@ -40,7 +40,7 @@ my %_commands = (
 my %commands = (     
   JOIN => sub {   
     my ($source, $cmd, $target) = @_; 
-    my $nick = (split '!', $source)[0];"
+    my $nick = (split '!', $source)[0];
     $nick = substr $nick, 1;
     $target = substr $target, 1;
     quote("PRIVMSG $target :Hello, $nick!");
