@@ -22,15 +22,13 @@ $sock = IO::Socket::INET->new(
   Timeout => 30                       # give it 30 secons before we give up
 ) || die "Could not connect to server: $!\n";
 
-
-
-
 sub quote {
   my ($msg) = @_;
   print $sock "$msg\r\n"; # this method makes life easy. instead of doing print $sock "DATA\r\n";, we can do quote('DATA') for the same effect
   print "S: $msg\n";
 }
 
+# Ignore this until the comments bring you here! Sroll 
 my %commands = (     # we've already declared %commands above as "my" (local)
   JOIN => sub {   # command is the key, instructions on how to parse that command are in the value as an anonymous subroutine
     my ($source, $cmd, $target) = @_; # this is what a JOIN line looks like: :miniCruzer!eyeless@255.255.255.255 JOIN :#Corinth"
@@ -49,13 +47,12 @@ my %commands = (     # we've already declared %commands above as "my" (local)
   },
   PRIVMSG => sub {
     my ($src, $cmd, $target, @msg) = @_;
+    # command interface will go here
   }
 );
 
 quote("NICK $mynick");                # this is registration to the server. we're introducing our self as
 quote("USER $mynick 8 $ident :realname"); # Perl!perl, and our real name is LOL PERL!
-
-
 
 while ($buffer = <$sock>) # < > resembles the output of the socket file. we store it as $buffer
 {
