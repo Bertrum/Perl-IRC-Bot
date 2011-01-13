@@ -52,7 +52,7 @@ my %commands = (     # we've already declared %commands above as "my" (local)
 );
 
 quote("NICK $mynick");                # this is registration to the server. we're introducing our self as
-quote("USER $mynick 8 $ident :realname"); # Perl!perl, and our real name is LOL PERL!
+quote("USER $mynick 8 $ident :$realname"); # Perl!perl, and our real name is LOL PERL!
 
 while ($buffer = <$sock>) # < > resembles the output of the socket file. we store it as $buffer
 {
